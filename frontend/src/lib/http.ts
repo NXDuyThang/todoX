@@ -1,5 +1,9 @@
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
+const API_BASE_URL = (
+  import.meta.env.VITE_API_BASE_URL ? String(import.meta.env.VITE_API_BASE_URL) : ''
+).replace(/\/+$/, '');
+
 export class HttpError extends Error {
   status: number;
   bodyText?: string;
@@ -20,7 +24,9 @@ export async function http<TResponse>(
     signal?: AbortSignal;
   },
 ): Promise<TResponse> {
-  const res = await fetch(path, {
+  const url =
+    API_BASE_URL && path.startsWith('/') ? `${API_BASE_URL}${path}` : path;
+  const res = await fetch(url, {
     method: opts?.method ?? 'GET',
     headers: opts?.body ? { 'Content-Type': 'application/json' } : undefined,
     body: opts?.body ? JSON.stringify(opts.body) : undefined,
