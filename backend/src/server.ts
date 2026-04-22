@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import taskRoute from './routes/taskRoute.js';
 import { ConnectDB } from './config/db.js';
 import dotenv from 'dotenv';
@@ -9,6 +10,12 @@ const app = express();
 
 ConnectDB();
 
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  }),
+);
 app.use(express.json());
 
 app.use("/api/tasks", taskRoute);
